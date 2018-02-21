@@ -13,17 +13,16 @@ public class JsonUtils {
 
     public static Sandwich parseSandwichJson(String json) {
         Sandwich parsedSandwich = new Sandwich();
-
         try {
             JSONObject jsonSandwich = new JSONObject(json);
             JSONObject jsonSandwichName = jsonSandwich.getJSONObject(Sandwich.JSON_NAME);
             parsedSandwich = new Sandwich(
-                    jsonSandwichName.getString(Sandwich.JSON_MAIN_NAME),
-                    getJsonArrayAsList(jsonSandwichName.getJSONArray(Sandwich.JSON_ALSO_KNOWN_AS)),
-                    jsonSandwich.getString(Sandwich.JSON_PLACE_OF_ORIGIN),
-                    jsonSandwich.getString(Sandwich.JSON_DESCRIPTION),
-                    jsonSandwich.getString(Sandwich.JSON_IMAGE),
-                    getJsonArrayAsList(jsonSandwich.getJSONArray(Sandwich.JSON_INGREDIENTS))
+                    jsonSandwichName.optString(Sandwich.JSON_MAIN_NAME),
+                    getJsonArrayAsList(jsonSandwichName.optJSONArray(Sandwich.JSON_ALSO_KNOWN_AS)),
+                    jsonSandwich.optString(Sandwich.JSON_PLACE_OF_ORIGIN),
+                    jsonSandwich.optString(Sandwich.JSON_DESCRIPTION),
+                    jsonSandwich.optString(Sandwich.JSON_IMAGE),
+                    getJsonArrayAsList(jsonSandwich.optJSONArray(Sandwich.JSON_INGREDIENTS))
             );
 
         } catch (JSONException e) {
@@ -33,10 +32,12 @@ public class JsonUtils {
         return parsedSandwich;
     }
 
-    private static List<String> getJsonArrayAsList(JSONArray jsonArray) throws JSONException {
+    private static List<String> getJsonArrayAsList(JSONArray jsonArray) {
         List<String> list = new ArrayList<>();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            list.add(jsonArray.getString(i));
+        if (jsonArray != null) {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                list.add(jsonArray.optString(i));
+            }
         }
         return list;
     }
